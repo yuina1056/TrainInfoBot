@@ -1,30 +1,26 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require 'slack'
+
 
 @TrainName = ""
 @TrainCompany = ""
 
 class TrainInfo_Post
-  #JSON取得
-  def get_json
+  def json_get
     uri = URI.parse('https://rti-giken.jp/fhc/api/train_tetsudo/delay.json')
     json = Net::HTTP.get(uri)
-    result = JSON.parse(json)
+    JSON.parse(json)
   end
-  #JSONの中身判定
-  def json_judge(json_obj)
-    for objAllay in json_obj do
-      if @TrainName == objAllay.name && @TrainCompany == objAllay.company
-        return true
-      end  
+
+  def slack_post(channel,message)
+    Slack.configure do |config|
+      config.token = ENV["SLACK_TOKEN"]
     end
-  end
-  #slackにポストする
-  def slack_post
-    
+    Slack.chat_postMessage(channel: channel, text: message)
   end
 end
 
 traininfo = TrainInfo_Post.new
-puts traininfo.get_json
+puts traininfo.slack_post("#general","testMessage")
