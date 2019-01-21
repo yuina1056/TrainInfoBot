@@ -1,7 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'json'
-require 'slack'
+require 'slack-ruby-client'
 require 'dotenv'
 
 train_company = '名古屋鉄道'
@@ -32,14 +32,16 @@ class Traininfopost
       Dotenv.load
       config.token = ENV['SLACK_TOKEN']
     end
-    Slack.chat_postMessage(channel: channel, text: message)
+    client = Slack::Web::Client.new
+    p client.auth_test
+    client.chat_postMessage(channel: channel, text: message, as_user: true) 
   end
 end
 
 def lambda_handler(event:, context:)
   traininfo = Traininfopost.new
   traininfo.slack_post(
-    ENV['CHANNEL'], traininfo.delay_judge(traininfo.json_get, train_company)
+    '#general', traininfo.delay_judge(traininfo.json_get, train_company)
   )
     # TODO: implement
   { statusCode: 200, body: JSON.generate('Hello from Lambda!') }
@@ -47,5 +49,5 @@ end
 
 traininfo = Traininfopost.new
 traininfo.slack_post(
-  ENV['CHANNEL'], traininfo.delay_judge(traininfo.json_get, train_company)
+  'C9LGQ06LT', traininfo.delay_judge(traininfo.json_get, train_company)
 )
