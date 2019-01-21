@@ -36,6 +36,15 @@ class Traininfopost
   end
 end
 
+def lambda_handler(event:, context:)
+  traininfo = Traininfopost.new
+  traininfo.slack_post(
+    ENV['CHANNEL'], traininfo.delay_judge(traininfo.json_get, train_company)
+  )
+    # TODO: implement
+  { statusCode: 200, body: JSON.generate('Hello from Lambda!') }
+end
+
 traininfo = Traininfopost.new
 traininfo.slack_post(
   ENV['CHANNEL'], traininfo.delay_judge(traininfo.json_get, train_company)
