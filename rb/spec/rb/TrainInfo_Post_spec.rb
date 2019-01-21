@@ -3,9 +3,9 @@ RSpec.describe 'TrainInfo_Post' do
     @trainInfo_Post = TrainInfo_Post.new
   end
   it 'trainInfo_Post get_json' do
-      @trainInfo_Post.get_json()
+    @trainInfo_Post.json_get
   end
   it 'slack_post' do
-      @TrainInfo_Post.slack_post()
+    @TrainInfo_Post.slack_post
   end
 end
